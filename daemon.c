@@ -486,9 +486,12 @@ static void receive_queue(int *raw, int rawlen, int plslen, int hwtype) {
 				logprintf(LOG_ERR, "out of memory");
 				exit(EXIT_FAILURE);
 			}
+			//printf("\n\nprocessing: ");
 			for(i=0;i<rawlen;i++) {
 				rnode->raw[i] = raw[i];
+				//printf("%d ",raw[i]);
 			}
+			//printf("receive_queue: rawlen:%d plslen:%d\n",rawlen,plslen);
 			rnode->rawlen = rawlen;
 			rnode->plslen = plslen;
 			rnode->hwtype = hwtype;
@@ -583,8 +586,8 @@ void *receive_parse_code(void *param) {
 							}
 						}
 						if(protocol->parseRaw) {
-							logprintf(LOG_DEBUG, "recevied pulse length of %d", recvqueue->plslen);
-							logprintf(LOG_DEBUG, "called %s parseRaw()", protocol->id);
+							//logprintf(LOG_DEBUG, "recevied pulse length of %d", recvqueue->plslen);
+							logprintf(LOG_DEBUG, "called %s parseRaw() plslen %d rawlen %d", protocol->id,recvqueue->plslen, recvqueue->rawlen);
 							protocol->parseRaw();
 							protocol->repeats = -1;
 							receiver_create_message(protocol);
@@ -627,7 +630,7 @@ void *receive_parse_code(void *param) {
 						   strcmp(protocol->id, "pilight_firmware") == 0) {
 							if(protocol->parseCode) {
 								logprintf(LOG_DEBUG, "caught minimum # of repeats %d of %s", protocol->repeats, protocol->id);
-								logprintf(LOG_DEBUG, "called %s parseCode()", protocol->id);
+								logprintf(LOG_DEBUG, "called %s parseCode() plslen %d rawlen %d", protocol->id,recvqueue->plslen, recvqueue->rawlen);
 								protocol->parseCode();
 								receiver_create_message(protocol);
 							}
